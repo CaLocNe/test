@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thư viện Sách &amp; Bài học</title>
+  <meta name="description" content="Xem và tải miễn phí sách, bài học dạng PDF và Word.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ Thanh menu trên cùng (luôn cố định khi cuộn) ============ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button type="button" id="menu-button" class="menu-button" aria-expanded="false" aria-controls="drawer" aria-label="Mở menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <span class="topbar-title">Thư viện Sách</span>
+    </div>
+
+    <!-- Avatar mặc định (biểu tượng sách). Muốn dùng ảnh thật: thay khối
+         <span class="avatar">...</span> bên dưới bằng
+         <img class="avatar" src="images/avatar.jpg" alt="Thư viện Sách & Bài học"> -->
+    <span class="avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 5.5c2.2-1 4.6-1.3 6.5-.4.6.3 1 .9 1 1.6v10.8c0-.7-.4-1.3-1-1.6-1.9-.9-4.3-.6-6.5.4z"></path>
+        <path d="M21 5.5c-2.2-1-4.6-1.3-6.5-.4-.6.3-1 .9-1 1.6v10.8c0-.7.4-1.3 1-1.6 1.9-.9 4.3-.6 6.5.4z"></path>
+      </svg>
+    </span>
+  </header>
+
+  <!-- ============ Lớp phủ mờ phía sau menu ============ -->
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+  <!-- ============ Menu trượt bên trái ============ -->
+  <nav id="drawer" class="drawer" aria-label="Menu chính">
+    <div class="drawer-nav">
+
+      <button type="button" id="nav-home" class="drawer-item is-active">
+        <span class="dot"></span>
+        <span>Trang chủ</span>
+      </button>
+
+      <button type="button" id="nav-sach" class="drawer-item drawer-item--expandable" aria-expanded="false" aria-controls="sach-wrapper">
+        <span class="dot"></span>
+        <span>Sách</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
+      <div id="sach-wrapper" class="drawer-submenu-wrapper">
+        <div class="drawer-submenu-inner">
+          <div class="grade-grid">
+            <button type="button" class="grade-chip" data-category="Lớp 1">Lớp 1</button>
+            <button type="button" class="grade-chip" data-category="Lớp 2">Lớp 2</button>
+            <button type="button" class="grade-chip" data-category="Lớp 3">Lớp 3</button>
+            <button type="button" class="grade-chip" data-category="Lớp 4">Lớp 4</button>
+            <button type="button" class="grade-chip" data-category="Lớp 5">Lớp 5</button>
+            <button type="button" class="grade-chip" data-category="Lớp 6">Lớp 6</button>
+            <button type="button" class="grade-chip" data-category="Lớp 7">Lớp 7</button>
+            <button type="button" class="grade-chip" data-category="Lớp 8">Lớp 8</button>
+            <button type="button" class="grade-chip" data-category="Lớp 9">Lớp 9</button>
+            <button type="button" class="grade-chip" data-category="Lớp 10">Lớp 10</button>
+            <button type="button" class="grade-chip" data-category="Lớp 11">Lớp 11</button>
+            <button type="button" class="grade-chip" data-category="Lớp 12">Lớp 12</button>
+            <button type="button" class="grade-chip grade-chip--wide" data-category="Sách bài tập">Sách bài tập</button>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" id="nav-contact" class="drawer-item">
+        <span class="dot"></span>
+        <span>Liên hệ</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ============ Nội dung trang ============ -->
+  <div class="site-header">
+    <div class="header-inner">
+      <h1>Thư viện Sách &amp; Bài học</h1>
+      <p class="tagline">Xem và tải tài liệu học tập miễn phí, dành cho tất cả mọi người.</p>
+
+      <div class="controls">
+        <label class="visually-hidden" for="search-input">Tìm kiếm tài liệu</label>
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Tìm theo tên tài liệu…"
+          autocomplete="off"
+        >
+
+        <!-- Bộ lọc danh mục vẫn tồn tại để xử lý dữ liệu (dùng bởi js/app.js),
+             nhưng ẩn khỏi giao diện vì đã có menu "Sách" ở trên đảm nhiệm. -->
+        <label class="visually-hidden" for="category-filter">Lọc theo danh mục</label>
+        <select id="category-filter" class="visually-hidden">
+          <option value="">Tất cả danh mục</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <main id="catalog" class="catalog">
+    <p class="status-message" id="initial-status">Đang tải danh sách tài liệu…</p>
+  </main>
+
+  <!-- ============ Liên hệ ============ -->
+  <!-- Thay email bên dưới bằng email thật của bạn -->
+  <section id="lien-he" class="contact">
+    <div class="contact-inner">
+      <h2>Liên hệ</h2>
+      <p>Có góp ý hoặc muốn gửi thêm tài liệu? Liên hệ với mình qua:</p>
+      <p class="contact-detail">
+        Email: <a href="mailto:email-cua-ban@example.com">email-cua-ban@example.com</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>Thư viện cập nhật thường xuyên. Mọi tài liệu đều miễn phí.</p>
+  </footer>
+
+  <!-- Firebase (phiên bản compat, dùng được trực tiếp qua thẻ script, không cần công cụ build) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+/* ---------------------------------------------------------
+   Thư viện Sách & Bài học — bảng màu "phòng đọc" (reading room)
+   --------------------------------------------------------- */
+
+:root {
+  --color-bg: #14231b;
+  --color-bg-panel: #1b2e23;
+  --color-bg-panel-hover: #21382a;
+  --color-border: rgba(234, 227, 210, 0.14);
+  --color-border-strong: rgba(234, 227, 210, 0.28);
+  --color-ink: #eae3d2;
+  --color-ink-muted: #a9b6ac;
+  --color-gold: #c9a24a;
+  --color-gold-strong: #ddb75d;
+  --color-teal: #6fa392;
+
+  /* Menu trượt — tông "giấy" (parchment), như ngăn kéo tủ mục lục thư viện */
+  --color-drawer-bg: #f4efe3;
+  --color-drawer-ink: #1c2c22;
+  --color-drawer-muted: #6b6152;
+  --color-drawer-border: rgba(28, 44, 34, 0.12);
+  --color-drawer-active-bg: rgba(28, 44, 34, 0.07);
+  --color-drawer-active-dot: #1c2c22;
+  --color-drawer-chip-bg: rgba(28, 44, 34, 0.05);
+  --color-drawer-chip-active-bg: #1c2c22;
+  --color-drawer-chip-active-ink: #f4efe3;
+
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius: 3px;
+  --max-width: 960px;
+  --header-height: 60px;
+  --drawer-width: min(320px, 85vw);
+
+  --z-backdrop: 40;
+  --z-drawer: 45;
+  --z-topbar: 50;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding-top: var(--header-height);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Thanh menu trên cùng (topbar) ---------- */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: var(--z-topbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1rem;
+  background: rgba(20, 35, 27, 0.75);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.menu-button {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  margin: -0.5rem 0;
+  color: var(--color-ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-button svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.topbar-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gold);
+  color: var(--color-bg);
+  overflow: hidden;
+}
+
+.avatar svg {
+  width: 19px;
+  height: 19px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Lớp phủ mờ + menu trượt (drawer) ---------- */
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-backdrop);
+  background: rgba(10, 16, 12, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.drawer-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  width: var(--drawer-width);
+  z-index: var(--z-drawer);
+  background: var(--color-drawer-bg);
+  color: var(--color-drawer-ink);
+  overflow-y: auto;
+  padding: 0.75rem 0 2rem;
+  transform: translateX(-100%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 10px 0 28px rgba(0, 0, 0, 0.28);
+}
+
+.drawer.is-open {
+  transform: translateX(0);
+}
+
+.drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0 0.75rem;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-drawer-ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drawer-item .dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.drawer-item.is-active {
+  background: var(--color-drawer-active-bg);
+  font-weight: 600;
+}
+
+.drawer-item.is-active .dot {
+  background: var(--color-drawer-active-dot);
+}
+
+.drawer-item--expandable {
+  justify-content: flex-start;
+}
+
+.drawer-item--expandable .chevron {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transition: transform 0.28s ease;
+}
+
+.drawer-item--expandable[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.drawer-item:focus-visible,
+.grade-chip:focus-visible,
+.menu-button:focus-visible {
+  outline: 2px solid var(--color-gold-strong);
+  outline-offset: 2px;
+}
+
+/* Khối con "Sách" — mở/đóng mượt bằng kỹ thuật grid-template-rows */
+
+.drawer-submenu-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drawer-submenu-wrapper.is-open {
+  grid-template-rows: 1fr;
+}
+
+.drawer-submenu-inner {
+  overflow: hidden;
+}
+
+.grade-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem 0.6rem 1.9rem;
+}
+
+.grade-chip {
+  background: var(--color-drawer-chip-bg);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 0.25rem;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-drawer-ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.grade-chip--wide {
+  grid-column: 1 / -1;
+}
+
+.grade-chip.is-active {
+  background: var(--color-drawer-chip-active-bg);
+  color: var(--color-drawer-chip-active-ink);
+}
+
+/* ---------- Header (hero) ---------- */
+
+.site-header {
+  border-bottom: 1px solid var(--color-border);
+  padding: 2.25rem 1.5rem 2.25rem;
+}
+
+.header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.site-header h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  margin: 0 0 0.5rem;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  margin: 0 0 1.75rem;
+  color: var(--color-ink-muted);
+  font-size: 1.05rem;
+  max-width: 46ch;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+#search-input {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--color-ink);
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+#search-input::placeholder {
+  color: var(--color-ink-muted);
+}
+
+#search-input:focus-visible,
+.doc-open:focus-visible {
+  outline: 2px solid var(--color-gold-strong);
+  outline-offset: 2px;
+}
+
+/* ---------- Catalog ---------- */
+
+.catalog {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  min-height: 40vh;
+}
+
+.status-message {
+  color: var(--color-ink-muted);
+  font-size: 1rem;
+  padding: 2rem 0;
+}
+
+.category-section + .category-section {
+  margin-top: 2.75rem;
+}
+
+.category-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.category-heading h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.category-heading .count {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+/* ---------- Card ---------- */
+
+.doc-card {
+  position: relative;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-gold);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.doc-card--doc {
+  border-left-color: var(--color-teal);
+}
+
+.doc-card:hover {
+  background: var(--color-bg-panel-hover);
+}
+
+.doc-type {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-bg);
+  background: var(--color-gold);
+  border-radius: var(--radius);
+  padding: 0.15rem 0.45rem;
+}
+
+.doc-card--doc .doc-type {
+  background: var(--color-teal);
+}
+
+.doc-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.35;
+}
+
+.doc-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+}
+
+.doc-open {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-gold-strong);
+  text-decoration: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.doc-card--doc .doc-open {
+  color: var(--color-teal);
+}
+
+.doc-open:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Liên hệ ---------- */
+
+.contact {
+  border-top: 1px solid var(--color-border);
+  padding: 3rem 1.5rem;
+}
+
+.contact-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.contact h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+  color: var(--color-ink);
+}
+
+.contact p {
+  margin: 0 0 0.5rem;
+  color: var(--color-ink-muted);
+}
+
+.contact-detail a {
+  color: var(--color-gold-strong);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+}
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-card,
+  .drawer,
+  .drawer-backdrop,
+  .drawer-submenu-wrapper,
+  .drawer-item--expandable .chevron {
+    transition: none;
+  }
+}
